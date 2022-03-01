@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: 115976967888.dkr.ecr.ap-northeast-1.amazonaws.com/backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: ap-northeast-1
+            - name: DYNAMODB_TABLE_NAME
+              value: messages

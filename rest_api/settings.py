@@ -29,12 +29,13 @@ DEBUG = config('DEBUG')
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-ALLOWED_HOSTS = ['k8s-sample-backend.herokuapp.com']
-
+# ALLOWED_HOSTS = ['k8s-sample-backend.herokuapp.com', 'localhost:8000']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'aws_xray_sdk.ext.django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'aws_xray_sdk.ext.django.middleware.XRayMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -58,8 +60,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000"
+    "http://a76132d6b410c4573bc9fda574b8cd81-215330998.ap-northeast-1.elb.amazonaws.com:80",
+    "http://a76132d6b410c4573bc9fda574b8cd81-215330998.ap-northeast-1.elb.amazonaws.com:3000",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://frontend.frontend:3000"
 ]
+
+XRAY_RECORDER = {
+    'AUTO_INSTRUMENT': True,
+    'AWS_XRAY_CONTEXT_MISSING': 'LOG_ERROR',
+    'AWS_XRAY_DAEMON_ADDRESS': 'xray-service.default:2000',
+    'AWS_XRAY_TRACING_NAME': 'backend-service',
+    'SAMPLING': False,
+}
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
